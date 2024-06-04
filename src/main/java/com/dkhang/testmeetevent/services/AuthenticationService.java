@@ -11,7 +11,7 @@ import com.dkhang.testmeetevent.dtos.user.LoginUserDto;
 import com.dkhang.testmeetevent.dtos.user.RegisterUserDto;
 import com.dkhang.testmeetevent.models.User;
 import com.dkhang.testmeetevent.repositories.UserRepository;
-import com.dkhang.testmeetevent.responses.UserInfor;
+import com.dkhang.testmeetevent.responses.user.UserInfor;
 
 import lombok.RequiredArgsConstructor;
 

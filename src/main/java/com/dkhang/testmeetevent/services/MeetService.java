@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,11 +23,15 @@ import com.dkhang.testmeetevent.models.User;
 import com.dkhang.testmeetevent.repositories.OccupantRepository;
 import com.dkhang.testmeetevent.repositories.RoomRepository;
 import com.dkhang.testmeetevent.repositories.UserRepository;
+import com.dkhang.testmeetevent.responses.ApiResponseData;
+import com.dkhang.testmeetevent.responses.room.RoomDestroyedResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MeetService {
     private final Map<String, Object> extraClaims = new HashMap<>();
 
@@ -41,7 +43,7 @@ public class MeetService {
 
     private final OccupantRepository occupantRepository;
 
-    public void createRoom(RoomCreatedDto input) {
+    public Room createRoom(RoomCreatedDto input) {
         Room room = Room
                 .builder()
                 .id(input.getRoomID())
@@ -49,14 +51,18 @@ public class MeetService {
                 .isBreakout(input.isBreakout())
                 .createdAt(new Date(input.getCreatedAt() * 1000))
                 .build();
-        roomRepository.save(room);
+        return roomRepository.save(room);
     }
 
-    public void destroyRoom(RoomDestroyedDto input) {
+    public RoomDestroyedResponse destroyRoom(RoomDestroyedDto input) {
+        Date destroyedAt = new Date(input.getDestroyedAt() * 1000);
+        String roomID = input.getRoomID();
         try {
-            roomRepository.destroyRoom(input.getRoomID(), new Date(input.getDestroyedAt() * 1000));
+            roomRepository.destroyRoom(roomID, destroyedAt);
         } catch (Exception e) {
+            log.debug(e.getMessage());
         }
+        return new RoomDestroyedResponse(roomID, destroyedAt);
     }
 
     public void handleOccupantJoined(OccupantJoinedDto input) {
@@ -106,8 +112,9 @@ public class MeetService {
         extraClaims.put("room", "*");
     }
 
-    public String generateMeetToken() {
-        return jwtService.generateMeetToken(extraClaims);
+    public ApiResponseData<String> generateMeetToken() {
+        String token = jwtService.generateMeetToken(extraClaims);
+        return new ApiResponseData<String>(0, token, "");
     }
 
     public List<Room> getAllRooms() {

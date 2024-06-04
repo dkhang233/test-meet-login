@@ -1,4 +1,4 @@
-package com.dkhang.testmeetevent.responses;
+package com.dkhang.testmeetevent.responses.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

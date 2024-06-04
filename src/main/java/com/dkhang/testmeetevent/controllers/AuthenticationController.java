@@ -10,18 +10,20 @@ import com.dkhang.testmeetevent.dtos.user.LoginUserDto;
 import com.dkhang.testmeetevent.dtos.user.RegisterUserDto;
 import com.dkhang.testmeetevent.models.User;
 import com.dkhang.testmeetevent.responses.ApiResponseData;
-import com.dkhang.testmeetevent.responses.LoginResponse;
-import com.dkhang.testmeetevent.responses.UserInfor;
+import com.dkhang.testmeetevent.responses.user.LoginResponse;
+import com.dkhang.testmeetevent.responses.user.UserInfor;
 import com.dkhang.testmeetevent.services.AuthenticationService;
 import com.dkhang.testmeetevent.services.JwtService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3333")
 public class AuthenticationController {
 
     @Value("${api.prefix}")
