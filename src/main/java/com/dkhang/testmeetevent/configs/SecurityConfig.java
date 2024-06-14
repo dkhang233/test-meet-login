@@ -23,6 +23,18 @@ public class SecurityConfig {
     private String apiPrefix;
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private static final String[] WHITE_LIST_URL = {"/api/v1/users/**",
+            "/api/v1/errors/**",
+            "/websocket/**",
+            "/",
+            "/index.html",
+            "/main.css", "/js/**", "/css/**", "/img/**", "/favicon.ico/**",
+            "/topic/**", "/queue/**", "/user/**", "/app/**",
+            "/chat/**","/messages/**",
+            "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,13 +42,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.OPTIONS).permitAll();
-                    auth.requestMatchers(apiPrefix + "/errors/**").permitAll();
-                    auth.requestMatchers(apiPrefix + "/users/login", apiPrefix + "/users/signup",
-                            apiPrefix + "/users/code").permitAll();
-                    auth.requestMatchers("/websocket/**").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers(WHITE_LIST_URL).permitAll().anyRequest().authenticated();
+//                    auth.requestMatchers(apiPrefix + "/errors/**").permitAll();
+//                    auth.requestMatchers(apiPrefix + "/users/login", apiPrefix + "/users/signup",
+//                            apiPrefix + "/users/code").permitAll();
+//                    auth.requestMatchers("/websocket/**").permitAll();
+//                    auth.requestMatchers("/").permitAll();
+//                    auth.anyRequest().authenticated();;
+
                 })
+
                 .sessionManagement(s -> {
                     s.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })

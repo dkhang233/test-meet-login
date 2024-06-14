@@ -35,6 +35,8 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private int role;
 
+    private Status status;
+
     public String getName() {
         return username;
     }
